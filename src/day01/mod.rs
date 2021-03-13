@@ -1,12 +1,13 @@
 use std::fs;
+use std::io::Result;
 
-pub fn solve() -> Result<(usize, usize), &'static str> {
+pub fn solve() -> Result<(usize, usize)> {
     let part1 = solve_part1()?;
     let part2 = solve_part2()?;
     Ok((part1, part2))
 }
 
-pub fn solve_part1() -> Result<usize, &'static str> {
+pub fn solve_part1() -> Result<usize> {
     let contents = fs::read_to_string("src/day01/input.txt").expect("boom");
     let lines_first = contents.lines();
     let lines_second = contents.clone();
@@ -21,10 +22,10 @@ pub fn solve_part1() -> Result<usize, &'static str> {
         }
     }
 
-    Err("Could not solve day 01 - part 1.")
+    panic!("Could not solve day 01 - part 1.");
 }
 
-pub fn solve_part2() -> Result<usize, &'static str> {
+pub fn solve_part2() -> Result<usize> {
     let contents = fs::read_to_string("src/day01/input.txt").expect("boom");
     let lines_first = contents.lines();
     let lines_second = contents.clone();
@@ -43,5 +44,5 @@ pub fn solve_part2() -> Result<usize, &'static str> {
         }
     }
 
-    Err("Could not solve day 01 - part 2.")
+    panic!("Could not solve day 01 - part 2.")
 }

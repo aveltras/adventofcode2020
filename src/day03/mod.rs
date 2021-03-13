@@ -1,7 +1,7 @@
-use std::fs;
 use std::str::FromStr;
+use std::{fs, io};
 
-pub fn solve() -> Result<(usize, usize), &'static str> {
+pub fn solve() -> io::Result<(usize, usize)> {
     let contents = fs::read_to_string("src/day03/input.txt").unwrap();
     let tree_area: TreeArea = contents.parse().unwrap();
 
@@ -11,12 +11,12 @@ pub fn solve() -> Result<(usize, usize), &'static str> {
     Ok((part1, part2))
 }
 
-fn solve_part1(tree_area: &TreeArea) -> Result<usize, &'static str> {
+fn solve_part1(tree_area: &TreeArea) -> io::Result<usize> {
     let collisions = collisions_per_slope(tree_area, &(3, 1));
     Ok(collisions)
 }
 
-fn solve_part2(tree_area: &TreeArea) -> Result<usize, &'static str> {
+fn solve_part2(tree_area: &TreeArea) -> io::Result<usize> {
     let slopes = vec![(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
     Ok(slopes
         .iter()
@@ -47,7 +47,7 @@ struct TreeArea {
 }
 
 impl FromStr for TreeArea {
-    type Err = &'static str;
+    type Err = io::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut locations = Vec::new();

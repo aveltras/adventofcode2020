@@ -1,3 +1,4 @@
+use std::io;
 use std::{borrow::Borrow, fs, str::FromStr};
 
 struct Password {
@@ -8,7 +9,7 @@ struct Password {
 }
 
 impl FromStr for Password {
-    type Err = &'static str;
+    type Err = io::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let parts: Vec<&str> = s.split_whitespace().collect();
@@ -27,13 +28,13 @@ impl FromStr for Password {
     }
 }
 
-pub fn solve() -> Result<(usize, usize), &'static str> {
+pub fn solve() -> io::Result<(usize, usize)> {
     let part1 = solve_part1()?;
     let part2 = solve_part2()?;
     Ok((part1, part2))
 }
 
-pub fn solve_part1() -> Result<usize, &'static str> {
+pub fn solve_part1() -> io::Result<usize> {
     let contents = fs::read_to_string("src/day02/input.txt").unwrap();
     let lines = contents.lines();
     let mut total: usize = 0;
@@ -54,7 +55,7 @@ pub fn solve_part1() -> Result<usize, &'static str> {
     Ok(total)
 }
 
-pub fn solve_part2() -> Result<usize, &'static str> {
+pub fn solve_part2() -> io::Result<usize> {
     let contents = fs::read_to_string("src/day02/input.txt").unwrap();
     let lines = contents.lines();
     let mut total: usize = 0;

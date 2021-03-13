@@ -1,23 +1,15 @@
 use std::io;
 
-use io::Error;
-
 mod day01;
 mod day02;
 mod day03;
+mod day04;
 
-fn main() -> Result<(), Error> {
-    let (result_part1, result_part2) = day01::solve()?;
-    println!("Day 1 - part 1 answer is {}", result_part1);
-    println!("Day 1 - part 2 answer is {}", result_part2);
+fn main() {
+    let results = vec![day01::solve(), day02::solve(), day03::solve()];
 
-    let (result_part1, result_part2) = day02::solve()?;
-    println!("Day 2 - part 1 answer is {}", result_part1);
-    println!("Day 2 - part 2 answer is {}", result_part2);
-
-    let (result_part1, result_part2) = day03::solve()?;
-    println!("Day 3 - part 1 answer is {}", result_part1);
-    println!("Day 3 - part 2 answer is {}", result_part2);
-
-    Ok(())
+    for (idx, (part1, part2)) in results.iter().enumerate() {
+        println!("Day {} - part 1 answer is {}", idx + 1, part1);
+        println!("Day {} - part 2 answer is {}", idx + 1, part2);
+    }
 }

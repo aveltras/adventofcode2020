@@ -28,19 +28,19 @@ impl FromStr for Password {
     }
 }
 
-pub fn solve() -> io::Result<(usize, usize)> {
-    let part1 = solve_part1()?;
-    let part2 = solve_part2()?;
-    Ok((part1, part2))
+pub fn solve() -> (usize, usize) {
+    let part1 = solve_part1();
+    let part2 = solve_part2();
+    (part1, part2)
 }
 
-pub fn solve_part1() -> io::Result<usize> {
+pub fn solve_part1() -> usize {
     let contents = fs::read_to_string("src/day02/input.txt").unwrap();
     let lines = contents.lines();
     let mut total: usize = 0;
 
     for line in lines {
-        let password: Password = line.parse()?;
+        let password: Password = line.parse().unwrap();
         let occurences = password
             .text
             .chars()
@@ -52,16 +52,16 @@ pub fn solve_part1() -> io::Result<usize> {
         }
     }
 
-    Ok(total)
+    total
 }
 
-pub fn solve_part2() -> io::Result<usize> {
+pub fn solve_part2() -> usize {
     let contents = fs::read_to_string("src/day02/input.txt").unwrap();
     let lines = contents.lines();
     let mut total: usize = 0;
 
     for line in lines {
-        let password: Password = line.parse()?;
+        let password: Password = line.parse().unwrap();
         if let Some(letter_at_pos1) = password.text.chars().nth(password.min_occurences - 1) {
             if let Some(letter_at_pos2) = password.text.chars().nth(password.max_occurences - 1) {
                 let mut valid = 0;
@@ -75,20 +75,11 @@ pub fn solve_part2() -> io::Result<usize> {
                 }
 
                 if valid == 1 {
-                    // println!(
-                    //     "word: {}, letter: {}, letter_at_pos1: {}, letter_at_pos2: {}, pos1: {}, pos2: {}",
-                    //     password.text,
-                    //     password.letter,
-                    // 	letter_at_pos1,
-                    // 	letter_at_pos2,
-                    //     password.min_occurences,
-                    //     password.max_occurences
-                    // );
                     total += 1
                 }
             }
         }
     }
 
-    Ok(total)
+    total
 }

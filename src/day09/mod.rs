@@ -7,7 +7,7 @@ pub fn solve() -> (usize, usize) {
     let window = 25;
     let numbers: Vec<usize> = lines.map(|x| x.parse::<usize>().unwrap()).collect();
 
-    let mut first_number: usize = numbers[window];
+    let mut invalid_number: usize = numbers[window];
 
     for i in window..numbers.len() {
         let mut found = false;
@@ -22,10 +22,34 @@ pub fn solve() -> (usize, usize) {
         }
 
         if !found {
-            first_number = numbers[i];
+            invalid_number = numbers[i];
             break;
         }
     }
 
-    (first_number, 1)
+    let length = numbers.len();
+    let mut contiguous: Option<Vec<usize>> = None;
+
+    'outer: for i in 0..length {
+        let mut sum = 0;
+        for j in i..length {
+            sum += numbers[j];
+            if sum > invalid_number {
+                break;
+            } else if sum == invalid_number {
+                contiguous = Some((i..=j).map(|x| numbers[x]).collect());
+                break 'outer;
+            } else {
+                continue;
+            }
+        }
+    }
+
+    let mut contiguous = contiguous.unwrap();
+    contiguous.sort();
+
+    let largest = &contiguous[contiguous.len() - 1];
+    let smallest = &contiguous[0];
+
+    (invalid_number, smallest + largest)
 }

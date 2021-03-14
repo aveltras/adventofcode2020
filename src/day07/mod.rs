@@ -7,7 +7,7 @@ pub fn solve() -> (usize, usize) {
     let input = fs::read_to_string("src/day07/input.txt").unwrap();
     let lines = input.lines();
 
-    let mut color_map: HashMap<String, HashMap<String, u8>> = HashMap::new();
+    let mut color_map: HashMap<String, HashMap<String, usize>> = HashMap::new();
     let mut reverse_color_map: HashMap<String, HashSet<String>> = HashMap::new();
 
     for line in lines {
@@ -17,14 +17,14 @@ pub fn solve() -> (usize, usize) {
         let mut content = parts.next().unwrap().to_string();
         content.pop();
         let content: Vec<&str> = content.split(", ").collect();
-        let mut subcolor_map: HashMap<String, u8> = HashMap::new();
+        let mut subcolor_map: HashMap<String, usize> = HashMap::new();
 
         for item in content {
             let parts = item.splitn(2, |c| c == ' ').collect::<Vec<&str>>();
             match parts[0] {
                 "no" => continue,
                 count => {
-                    subcolor_map.insert(parts[1].to_owned(), count.parse::<u8>().unwrap());
+                    subcolor_map.insert(parts[1].to_owned(), count.parse::<usize>().unwrap());
                     let color = parts[1].to_owned();
                     let colors = reverse_color_map.entry(color).or_insert(HashSet::new());
                     (*colors).insert(container.to_owned());
@@ -35,12 +35,24 @@ pub fn solve() -> (usize, usize) {
         color_map.insert(container.to_owned(), subcolor_map);
     }
 
-    let mut possible_colors: HashSet<String> =
+    let possible_colors: HashSet<String> =
         find_container("shiny gold".to_string(), &reverse_color_map);
 
-    // println!("{:?}", possible_colors);
+    let total_bags = find_contained("shiny gold".to_string(), &color_map) - 1; // removing the top container
 
-    (possible_colors.len(), 1)
+    (possible_colors.len(), total_bags)
+}
+
+fn find_contained(key: String, map: &HashMap<String, HashMap<String, usize>>) -> usize {
+    let items = map.get(&key).unwrap();
+    let mut total = 1;
+
+    for (k, v) in items {
+        let subtotal = find_contained(k.to_owned(), map);
+        total += v * subtotal;
+    }
+
+    total
 }
 
 fn find_container(key: String, map: &HashMap<String, HashSet<String>>) -> HashSet<String> {

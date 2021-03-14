@@ -9,6 +9,7 @@ mod day06;
 mod day07;
 mod day08;
 mod day09;
+mod day10;
 
 fn main() {
     let results = vec![
@@ -20,7 +21,8 @@ fn main() {
         // day06::solve(),
         // day07::solve(),
         // day08::solve(),
-        day09::solve(),
+        // day09::solve(),
+        day10::solve(),
     ];
 
     for (idx, (part1, part2)) in results.iter().enumerate() {

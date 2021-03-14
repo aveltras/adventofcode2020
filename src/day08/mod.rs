@@ -4,23 +4,52 @@ pub fn solve() -> (usize, usize) {
     let input = fs::read_to_string("src/day08/input.txt").unwrap();
     let lines = input.lines();
 
-    let instructions: Vec<Instruction> = lines.map(|l| l.parse::<Instruction>().unwrap()).collect();
+    let mut instructions: Vec<Instruction> =
+        lines.map(|l| l.parse::<Instruction>().unwrap()).collect();
+    let (pointer, acc) = test(&instructions).err().unwrap();
+    let mut pointer = 0;
+    let mut final_acc = 0;
 
+    for pointer in 0..instructions.len() {
+        match &instructions[pointer] {
+            Instruction::Acc(_) => continue,
+            instr => {
+                let old_instruction = instructions[pointer].clone();
+                let new_instruction = match instr {
+                    Instruction::NoOp(x) => Instruction::Jump(*x),
+                    Instruction::Jump(x) => Instruction::NoOp(*x),
+                    _ => panic!(),
+                };
+
+                instructions[pointer] = new_instruction;
+
+                match test(&instructions) {
+                    Err((p, _)) => {
+                        instructions[pointer] = old_instruction;
+                        continue;
+                    }
+                    Ok(acc_ok) => {
+                        final_acc = acc_ok;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    (acc as usize, final_acc as usize)
+}
+
+fn test(instructions: &Vec<Instruction>) -> Result<i32, (usize, i32)> {
     let mut processed_instructions: HashSet<usize> = HashSet::new();
-
     let mut pointer = 0;
     let mut acc = 0;
 
-    loop {
-        let instr = &instructions[pointer];
-
+    while let Some(instr) = instructions.get(pointer) {
         if processed_instructions.contains(&pointer) {
-            println!("Instruction {:?} already processed.", instr);
-            println!("Aborting.");
-            break;
+            return Err((pointer, acc));
         }
 
-        println!("Processing.. {:?}", instr);
         processed_instructions.insert(pointer);
 
         match instr {
@@ -33,14 +62,12 @@ pub fn solve() -> (usize, usize) {
                 pointer = (pointer as i32 + x) as usize;
             }
         }
-
-        println!("Pointer is now.. {:?}", pointer);
     }
 
-    (acc as usize, 1)
+    Ok(acc)
 }
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Clone, Debug, Hash, PartialEq, Eq)]
 enum Instruction {
     Acc(i32),
     Jump(i32),
